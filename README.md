@@ -16,7 +16,6 @@ SirenCon 2025; 2025-05-30; 2025-06-01; Rhinelander, WI
 - `last_name`
 - `email`
 - `role`
-- `is_trained`
 #### Examples:
 Cameron; Seaman; cameron@example.com; Director; is_trained=True
 
@@ -32,15 +31,6 @@ John; Appleseed; john@example.com; Audio; is_trained=False
 R7-001; Canon EOS R7; Available; Camera; Body Only
 
 VMG-002; Rode Video Mic GO; Checked_Out; Audio; Includes shock mount
-
-### Equipment Type:
-- `name`
-- `requires_training`
-- `description`
-#### Examples:
-Camera; DLSR Bodies/Video Cameras; requires_training=True
-
-Audio; Microphones/Recorders; requires_training=False
 
 #### Video:
 > Subset of equipment
