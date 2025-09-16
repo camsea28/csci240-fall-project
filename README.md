@@ -1,5 +1,8 @@
 # Database Idea: Event Media Gear Tracker
 
+## Diagram of Database:
+<img width="1116" height="684" alt="diagram" src="https://github.com/user-attachments/assets/551c6ee5-a095-4895-9962-7bd3b15595ee" />
+
 ## Entities:
 ### Event:
 - `name`
