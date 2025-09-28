@@ -1,0 +1,324 @@
+/*M!999999\- enable the sandbox mode */ 
+-- MariaDB dump 10.19-12.0.2-MariaDB, for osx10.19 (x86_64)
+--
+-- Host: 127.0.0.1    Database: project
+-- ------------------------------------------------------
+-- Server version	8.0.43-0ubuntu0.24.04.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
+
+--
+-- Table structure for table `Checkout`
+--
+
+DROP TABLE IF EXISTS `Checkout`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Checkout` (
+  `checkout_id` bigint NOT NULL AUTO_INCREMENT,
+  `checkout_time` timestamp NOT NULL,
+  `checkin_time` datetime DEFAULT NULL,
+  `condition_notes_out` text NOT NULL,
+  `condition_notes_in` text,
+  `asset_tag` varchar(64) NOT NULL,
+  `event_id` int NOT NULL,
+  `crewmember_id` int NOT NULL,
+  PRIMARY KEY (`checkout_id`),
+  KEY `asset_tag` (`asset_tag`),
+  KEY `crewmember_id` (`crewmember_id`),
+  KEY `event_id` (`event_id`),
+  CONSTRAINT `asset_tag` FOREIGN KEY (`asset_tag`) REFERENCES `Equipment` (`asset_tag`),
+  CONSTRAINT `crewmember_id` FOREIGN KEY (`crewmember_id`) REFERENCES `CrewMember` (`crewmember_id`),
+  CONSTRAINT `event_id` FOREIGN KEY (`event_id`) REFERENCES `Event` (`event_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Checkout`
+--
+
+LOCK TABLES `Checkout` WRITE;
+/*!40000 ALTER TABLE `Checkout` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `Checkout` VALUES
+(1,'2025-05-29 18:00:00',NULL,'Clean',NULL,'R7-001',2,2),
+(2,'2025-12-01 08:00:00','2025-12-01 13:00:00','Good condition','Foam needs replacing','VMG-002',1,1);
+/*!40000 ALTER TABLE `Checkout` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
+
+--
+-- Table structure for table `CrewMember`
+--
+
+DROP TABLE IF EXISTS `CrewMember`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `CrewMember` (
+  `crewmember_id` int NOT NULL AUTO_INCREMENT,
+  `first_name` text NOT NULL,
+  `last_name` text NOT NULL,
+  `email` text NOT NULL,
+  `role` text NOT NULL,
+  PRIMARY KEY (`crewmember_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CrewMember`
+--
+
+LOCK TABLES `CrewMember` WRITE;
+/*!40000 ALTER TABLE `CrewMember` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `CrewMember` VALUES
+(1,'Cameron','Seaman','cameron@example.com','Director'),
+(2,'John','Appleseed','john@example.com','Audio Operator');
+/*!40000 ALTER TABLE `CrewMember` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
+
+--
+-- Table structure for table `Equipment`
+--
+
+DROP TABLE IF EXISTS `Equipment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Equipment` (
+  `asset_tag` varchar(64) NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `equipment_type` enum('video','audio') NOT NULL,
+  `notes` text,
+  PRIMARY KEY (`asset_tag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Equipment`
+--
+
+LOCK TABLES `Equipment` WRITE;
+/*!40000 ALTER TABLE `Equipment` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `Equipment` VALUES
+('R7-001','Canon EOS R7','video','Body only'),
+('VMG-002','Rode Video Mic GO','audio','Includes shock mount');
+/*!40000 ALTER TABLE `Equipment` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`camerondb`@`localhost`*/ /*!50003 TRIGGER `bu_equipment_type_check` BEFORE UPDATE ON `Equipment` FOR EACH ROW BEGIN
+    IF OLD.equipment_type <> NEW.equipment_type THEN
+        IF NEW.equipment_type = 'video' AND EXISTS (SELECT 1 FROM Equipment_Audio WHERE asset_tag = NEW.asset_tag) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot change to video type: audio record exists';
+        END IF;
+
+        IF NEW.equipment_type = 'audio' AND EXISTS (SELECT 1 FROM Equipment_Video WHERE asset_tag = NEW.asset_tag) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot change to audio type: video record exists';
+        END IF;
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`camerondb`@`localhost`*/ /*!50003 TRIGGER `bd_equipment_child_check` BEFORE DELETE ON `Equipment` FOR EACH ROW BEGIN
+    IF EXISTS (SELECT 1 FROM Equipment_Audio WHERE asset_tag = OLD.asset_tag) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot delete: audio equipment record exists';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM Equipment_Video WHERE asset_tag = OLD.asset_tag) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cannot delete: video equipment record exists';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `Equipment_Audio`
+--
+
+DROP TABLE IF EXISTS `Equipment_Audio`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Equipment_Audio` (
+  `asset_tag` varchar(64) NOT NULL,
+  `model_number` varchar(100) DEFAULT NULL,
+  `mic_type` varchar(50) DEFAULT NULL,
+  `interface` varchar(50) DEFAULT NULL,
+  `phantom_power` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`asset_tag`),
+  CONSTRAINT `Equipment_Audio_Equipment_asset_tag_fk` FOREIGN KEY (`asset_tag`) REFERENCES `Equipment` (`asset_tag`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Equipment_Audio`
+--
+
+LOCK TABLES `Equipment_Audio` WRITE;
+/*!40000 ALTER TABLE `Equipment_Audio` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `Equipment_Audio` VALUES
+('VMG-002','VMG','Wireless Lavalier','3.5mm TRS',0);
+/*!40000 ALTER TABLE `Equipment_Audio` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`camerondb`@`localhost`*/ /*!50003 TRIGGER `bi_equipment_audio` BEFORE INSERT ON `Equipment_Audio` FOR EACH ROW BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Equipment WHERE asset_tag = NEW.asset_tag) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Equipment must exist in Equipment table first';
+    END IF;
+
+    IF (SELECT equipment_type FROM Equipment WHERE asset_tag = NEW.asset_tag) <> 'audio' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'equipment_type must be audio';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM Equipment_Video WHERE asset_tag = NEW.asset_tag) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Equipment already has video subtype';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `Equipment_Video`
+--
+
+DROP TABLE IF EXISTS `Equipment_Video`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Equipment_Video` (
+  `asset_tag` varchar(64) NOT NULL,
+  `model_number` varchar(100) DEFAULT NULL,
+  `resolution` varchar(50) DEFAULT NULL,
+  `frame_rate` varchar(50) DEFAULT NULL,
+  `media_type` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`asset_tag`),
+  CONSTRAINT `Equipment_Video_Equipment_asset_tag_fk` FOREIGN KEY (`asset_tag`) REFERENCES `Equipment` (`asset_tag`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Equipment_Video`
+--
+
+LOCK TABLES `Equipment_Video` WRITE;
+/*!40000 ALTER TABLE `Equipment_Video` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `Equipment_Video` VALUES
+('R7-001','R7','3840x2160','60','SD');
+/*!40000 ALTER TABLE `Equipment_Video` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`camerondb`@`localhost`*/ /*!50003 TRIGGER `bi_equipment_video` BEFORE INSERT ON `Equipment_Video` FOR EACH ROW BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Equipment WHERE asset_tag = NEW.asset_tag) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Equipment must exist in Equipment table first';
+    END IF;
+
+    IF (SELECT equipment_type FROM Equipment WHERE asset_tag = NEW.asset_tag) <> 'video' THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'equipment_type must be video';
+    END IF;
+
+    IF EXISTS (SELECT 1 FROM Equipment_Audio WHERE asset_tag = NEW.asset_tag) THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Equipment already has audio subtype';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `Event`
+--
+
+DROP TABLE IF EXISTS `Event`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Event` (
+  `event_id` int NOT NULL AUTO_INCREMENT,
+  `name` text NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `location` text NOT NULL,
+  PRIMARY KEY (`event_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Event`
+--
+
+LOCK TABLES `Event` WRITE;
+/*!40000 ALTER TABLE `Event` DISABLE KEYS */;
+set autocommit=0;
+INSERT INTO `Event` VALUES
+(1,'University of Montana Speech','2025-12-01','2025-12-02','Missoula, MT'),
+(2,'SirenCon 2025','2025-05-30','2025-06-01','Rhinelander, WI');
+/*!40000 ALTER TABLE `Event` ENABLE KEYS */;
+UNLOCK TABLES;
+commit;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
+
+-- Dump completed on 2025-09-28 12:02:41
