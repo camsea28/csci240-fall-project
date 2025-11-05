@@ -9,6 +9,8 @@
    - Subtasks:
      - Create logic for Create, Read, Update, Delete operations
      - Test each operation using sample data
+  > Partially complete!
+  > Still to complete - Update/Delete operations, added in read and create functionality
 
 ### 2. CRUD functionality for many-to-many relationship
    - Depends on: 1

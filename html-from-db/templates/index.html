@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crew Members</title>
+</head>
+<body>
+    <h1>Registered Crew Members</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Role</th>
+            <th>Email</th>
+        </tr>
+        {% for member in CrewMembers %}
+        <tr>
+            <td>{{ member.crewmember_id }}</td>
+            <td>{{ member.first_name }}</td>
+            <td>{{ member.last_name }}</td>
+            <td>{{ member.role }}</td>
+            <td>{{ member.email }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Add a new Crew Member</h2>
+    <form method="POST" action="/add">
+        <label>First Name: <input type="text" name="first_name"></label><br>
+        <label>Last Name: <input type="text" name="last_name"></label><br>
+        <label>Role: <input type="text" name="role"></label><br>
+        <label>Email: <input type="email" name="email"></label><br>
+        <input type="submit" value="Add Crew Member">
+    </form>
+</body>
+</html>
