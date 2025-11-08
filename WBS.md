@@ -9,8 +9,7 @@
    - Subtasks:
      - Create logic for Create, Read, Update, Delete operations
      - Test each operation using sample data
-  > Partially complete!
-  > Still to complete - Update/Delete operations, added in read and create functionality
+  > Complete! See commit [d571551] (https://github.com/camsea28/csci240-fall-project/commit/d571551c4c3777ab7165274a984ece63ba0706eb)
 
 ### 2. CRUD functionality for many-to-many relationship
    - Depends on: 1
