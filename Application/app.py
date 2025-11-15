@@ -69,25 +69,28 @@ def show_events():
             cursor.execute("INSERT INTO CrewMember_Event (crewmember_id, event_id) VALUES (%s, %s)", (crewmember_id, assign_event_id))
             connection.commit()
 
+        cursor.execute("SELECT first_name, last_name FROM CrewMember WHERE crewmember_id=%s", (crewmember_id,))
+        crew_name_result = cursor.fetchone()
+        if crew_name_result:
+            crewmember_name = crew_name_result[0] + " " + crew_name_result[1]
+        else:
+            crewmember_name = "Unknown"
+
         cursor.execute("""SELECT e.event_id, e.name, cm.first_name, cm.last_name from Event as e
             JOIN CrewMember_Event as cme ON e.event_id = cme.event_id
             JOIN CrewMember as cm ON cm.crewmember_id = cme.crewmember_id
             WHERE cm.crewmember_id=%s"""
                     , (crewmember_id,))
         result = cursor.fetchall()
-        if len(result) >= 1:
-            crewmember_name = result[0][2] + " " + result[0][3]
-            cursor.execute(
-                """SELECT event_id, name, location FROM Event
-                    WHERE event_id NOT IN (
-                        SELECT event_id FROM CrewMember_Event WHERE crewmember_id=%s
-                    )""",
-                (crewmember_id,)
-            )
-            other_events = cursor.fetchall()
-        else:
-            crewmember_name = "Unknown"
-            other_events = None
+
+        cursor.execute(
+            """SELECT event_id, name, location FROM Event
+                WHERE event_id NOT IN (
+                    SELECT event_id FROM CrewMember_Event WHERE crewmember_id=%s
+                )""",
+            (crewmember_id,)
+        )
+        other_events = cursor.fetchall()
         page_title = f"Events assigned to {crewmember_name}:"
     else:
         cursor.execute("SELECT event_id, name, location from Event")
