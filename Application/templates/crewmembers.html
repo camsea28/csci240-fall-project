@@ -50,8 +50,28 @@
 </table>
 <br>
 {% if event_id %}
+<h2>
+    Assign Crew Member:
+</h2>
+{% if other_crewmembers %}
+<form>
+  <select name="assign_crewmember_id">
+    <option>Choose Crew Member</option>
+    {% for crew in other_crewmembers %}
+    <option value='{{ crew[0] }}'>{{crew[1]}} {{crew[2]}} - {{crew[3]}} (ID {{crew[0]}})
+    </option>
+    {% endfor %}
+  </select>
+  <button type="submit" value="Assign">Assign</button>
+  <input type="hidden" name="event_id" value="{{ event_id }}" />
+</form>
+{% else %}
+No other crew members can be assigned to this event.<br>
+{% endif %}
+<br>
 <a href="/showevents">Return to events</a>
 <br>
 {% endif %}
+<a href="/manageCrewmembers">Add/Edit/Remove a Crew Member</a><br>
 <a href="/">Return to main page</a>
 {% endblock %}

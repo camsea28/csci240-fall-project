@@ -30,6 +30,11 @@ def show_crewmembers():
             connection.commit()
 
     if event_id is not None:
+        assign_crewmember_id = request.args.get('assign_crewmember_id')
+        if assign_crewmember_id is not None:
+            cursor.execute("INSERT INTO CrewMember_Event (crewmember_id, event_id) VALUES (%s, %s)", (assign_crewmember_id, event_id))
+            connection.commit()
+
         cursor.execute("""SELECT cm.crewmember_id, cm.first_name, cm.last_name, e.name, e.location from CrewMember as cm
             JOIN CrewMember_Event as cme ON cm.crewmember_id = cme.crewmember_id
             JOIN Event as e ON cme.event_id = e.event_id
@@ -40,15 +45,31 @@ def show_crewmembers():
             event_name = result[0][3]
             event_number = result[0][4]
         else:
-            event_name = event_number = "Unknown"
+            cursor.execute("SELECT name, location FROM Event WHERE event_id=%s", (event_id,))
+            event_info = cursor.fetchone()
+            if event_info:
+                event_name = event_info[0]
+                event_number = event_info[1]
+            else:
+                event_name = event_number = "Unknown"
+
+        cursor.execute(
+            """SELECT crewmember_id, first_name, last_name, role FROM CrewMember
+                WHERE crewmember_id NOT IN (
+                    SELECT crewmember_id FROM CrewMember_Event WHERE event_id=%s
+                )""",
+            (event_id,)
+        )
+        other_crewmembers = cursor.fetchall()
         page_title = f"{event_name} ({event_number}) Team"
     else:
         cursor.execute("SELECT crewmember_id, first_name, last_name from CrewMember")
         page_title = "Crew members"
         result = cursor.fetchall()
+        other_crewmembers = None
 
     cursor.close()
-    return render_template('crewmembers.html', crewmembers=result, pageTitle=page_title, event_id=event_id)
+    return render_template('crewmembers.html', crewmembers=result, pageTitle=page_title, event_id=event_id, other_crewmembers=other_crewmembers)
 
 @app.route('/showevents', methods=['GET'])
 def show_events():
