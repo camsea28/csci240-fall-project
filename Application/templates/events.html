@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block header %}{{pageTitle}}{% endblock %}
+{% block title %}Showing Events{% endblock %}
+
+
+{% block content %}
+
+<table>
+  <tr>
+    <th>Event ID</th>
+    <th>Event Name</th>
+    {% if crewmember_id %}
+    <th>Crew Member</th>
+    <th>Actions</th>
+    {% else %}
+    <th>Event Location</th>
+    <th>Actions</th>
+    {% endif %}
+  </tr>
+  {% for row in event_list %}
+  <tr>
+    <td>
+      {{row[0]}}
+    </td>
+    <td>
+      {{row[1]}}
+    </td>
+    {% if crewmember_id %}
+    <td>
+      {{row[2]}} {{row[3]}}
+    </td>
+    <td>
+      <a href="/showevents?crewmember_id={{crewmember_id}}&event_id={{row[0]}}&unassign=true">Unassign</a>
+    </td>
+    {% else %}
+    <td>
+      {{row[2]}}
+    </td>
+    <td>
+      <a href="/showcrewmembers?event_id={{row[0]}}">View Assigned Crew Members</a>
+    </td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+
+<h2>
+    Assign Event:
+</h2>
+{% if other_events %}
+<form>
+  <select name="assign_event_id">
+    <option>Choose Event</option>
+    {% for other_event in other_events %}
+    <option value='{{ other_event[0] }}'>{{other_event[1]}} in {{other_event[2]}} (ID {{other_event[0]}})
+    </option>
+    {% endfor %}
+  </select>
+  <button type="submit" value="Assign">Assign</button>
+  <input type="hidden" name="crewmember_id" value="{{ crewmember_id }}" />
+</form>
+{% else %}
+No other events can be assigned to this crew member.
+{% endif %}
+<a href="/">Return to main page</a>
+{% endblock %}

@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+
+<head>
+   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+   <title>{% block title %}{% endblock %} - Event Tracker</title>
+</head>
+
+<body>
+   <h1>
+      {% block header %}Event Media Gear Tracker{% endblock %}
+   </h1>
+   <h2>Please select an option below:</h2>
+   {% block content %}{% endblock %}
+   <p><a href="/manageCrewmembers">Manage crew member records</a></p>
+   <br>
+   <p><a href="/showcrewmembers">Show all crew members</a></p>
+   <p><a href="/showevents">Show all events</a></p>
+</body>
+
+</html>

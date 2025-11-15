@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block header %}{{pageTitle}}{% endblock %}
+{% block title %}Showing Crew Members{% endblock %}
+
+
+{% block content %}
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>First Name</th>
+    <th>Last Name</th>
+    {% if event_id %}
+    <th>Event</th>
+    <th>Location</th>
+    <th>Actions</th>
+    {% else %}
+    <th>Actions</th>
+    {% endif %}
+  </tr>
+  {% for row in crewmembers %}
+  <tr>
+    <td>
+      {{row[0]}}
+    </td>
+    <td>
+      {{row[1]}}
+    </td>
+    <td>
+      {{row[2]}}
+    </td>
+    {% if event_id %}
+    <td>
+      {{row[3]}}
+    </td>
+    <td>
+      {{row[4]}}
+    </td>
+    <td>
+      <a href="/showcrewmembers?event_id={{event_id}}&crewmember_id={{row[0]}}&unassign=true">Unassign</a>
+    </td>
+    {% else %}
+    <td>
+      <a href="/showevents?crewmember_id={{row[0]}}">View Assigned Events</a>
+    </td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+<a href="/">Return to main page</a>
+{% endblock %}
