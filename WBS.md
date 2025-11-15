@@ -9,7 +9,7 @@
    - Subtasks:
      - Create logic for Create, Read, Update, Delete operations
      - Test each operation using sample data
-  > Complete! See commit [d571551] (https://github.com/camsea28/csci240-fall-project/commit/d571551c4c3777ab7165274a984ece63ba0706eb)
+  > Complete! See commit [d571551](https://github.com/camsea28/csci240-fall-project/commit/d571551c4c3777ab7165274a984ece63ba0706eb)
 
 ### 2. CRUD functionality for many-to-many relationship
    - Depends on: 1
@@ -17,6 +17,7 @@
    - Subtasks:
      - Add join logic to allow for many-to-many relationship
      - Test operations
+   > Complete! See commit [a17e77e](https://github.com/camsea28/csci240-fall-project/commit/a17e77eb4c05f29795a00f9c11853e7998fed598) and [a2de3b7](https://github.com/camsea28/csci240-fall-project/commit/a2de3b7e5406780e94d685ab99e5eca93619ff0b)
 
 ### 3. Database considerations
    - Depends on: 1 and 2
