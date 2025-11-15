@@ -44,7 +44,8 @@
   </tr>
   {% endfor %}
 </table>
-
+<br>
+{% if crewmember_id %}
 <h2>
     Assign Event:
 </h2>
@@ -61,7 +62,13 @@
   <input type="hidden" name="crewmember_id" value="{{ crewmember_id }}" />
 </form>
 {% else %}
-No other events can be assigned to this crew member.
+No other events can be assigned to this crew member.<br>
+{% endif %}
+<br>
+{% endif %}
+{% if crewmember_id %}
+<a href="/showcrewmembers">Return to crew members</a>
+<br>
 {% endif %}
 <a href="/">Return to main page</a>
 {% endblock %}
