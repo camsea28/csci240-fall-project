@@ -7,36 +7,36 @@
    - No dependencies, can be started right away.
    - Effort: Medium (2–3 days)
    - Subtasks:
-     - Create logic for Create, Read, Update, Delete operations
-     - Test each operation using sample data
+     - 1.1 - Create logic for Create, Read, Update, Delete operations
+     - 1.2 - Test each operation using sample data
   > Complete! See commit [d571551](https://github.com/camsea28/csci240-fall-project/commit/d571551c4c3777ab7165274a984ece63ba0706eb)
 
 ### 2. CRUD functionality for many-to-many relationship
    - Depends on: 1
    - Effort: Large (1 week)
    - Subtasks:
-     - Add join logic to allow for many-to-many relationship
-     - Test operations
+     - 2.1 - Add join logic to allow for many-to-many relationship
+     - 2.2 - Test operations
    > Complete! See commit [a17e77e](https://github.com/camsea28/csci240-fall-project/commit/a17e77eb4c05f29795a00f9c11853e7998fed598) and [a2de3b7](https://github.com/camsea28/csci240-fall-project/commit/a2de3b7e5406780e94d685ab99e5eca93619ff0b)
 
 ### 3. Database considerations
    - Depends on: 1 and 2
    - Effort: Medium (2–3 days)
    - Subtasks:
-     - Sanitize user input and validate form data
-     - Create a user for database operations from the application
+     - 3.1 - Sanitize user input and validate form data
+     - 3.2 - Create a user for database operations from the application
        - should have minimum required permissions
 
 ### 4. Prepare final presentation/demo
    - Depends on: 3
    - Effort: Medium (2–3 days)
    - Subtasks:
-     - Write outline and talking points for presentation
-     - Prepare demonstration
+     - 4.1 - Write outline and talking points for presentation
+     - 4.2 - Prepare demonstration
 
 ### 5. Post-class presentation and cleanup
    - Depends on: 3 and 4
    - Effort: Large (1 week)
    - Subtasks:
-     - Clean up code and documentation
-     - Add visuals and deploy the project demo
+     - 5.1 - Clean up code and documentation
+     - 5.2 - Add visuals and deploy the project demo
