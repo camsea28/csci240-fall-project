@@ -26,6 +26,7 @@
      - 3.1 - Sanitize user input and validate form data
      - 3.2 - Create a user for database operations from the application
        - should have minimum required permissions
+   > Complete! See commit [6db4c65](https://github.com/camsea28/csci240-fall-project/commit/6db4c65c63f2dcc964167fb2c27283d0dcaef908)
 
 ### 4. Prepare final presentation/demo
    - Depends on: 3
