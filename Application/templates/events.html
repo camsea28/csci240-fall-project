@@ -70,5 +70,8 @@ No other events can be assigned to this crew member.<br>
 <a href="/showcrewmembers">Return to crew members</a>
 <br>
 {% endif %}
+{% if not crewmember_id %}
+<a href="/manageEvents">Add/Edit/Remove an Event</a><br>
+{% endif %}
 <a href="/">Return to main page</a>
 {% endblock %}

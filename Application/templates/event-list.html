@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block header %}
+Manage Events
+{% endblock %}
+
+{% block content %}
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Location</th>
+    <th>Maintenance</th>
+  </tr>
+  {% for row in collection %}
+  <tr>
+    <td>
+      {{row[0]}}
+    </td>
+    <td>
+      {{row[1]}}
+    </td>
+    <td>
+      {{row[2]}}
+    </td>
+    <td>
+        {{row[3]}}
+    </td>
+    <td>
+        {{row[4]}}
+    </td>
+    <td>
+      <a href="?delete=true&id={{row[0]}}">Delete</a><br />
+      <a href="/updateEvent?id={{row[0]}}">Change</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+<h2>Add a new event</h2>
+<form action="">
+  Name: <input type="text" name="name" /><br />
+  Start Date (YYYY-MM-DD): <input type="text" name="start_date" /><br />
+  End Date (YYYY-MM-DD): <input type="text" name="end_date" /><br />
+  Location: <input type="text" name="location" /><br />
+  <input type="submit" value="Submit">
+</form>
+<a href="/">Return to main page</a>
+{% endblock %}

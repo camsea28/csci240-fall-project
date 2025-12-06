@@ -166,6 +166,51 @@ def update_crewmember():
     cursor.close()
     return render_template('crewmember-update.html', id=id, existingFirst=existing_first, existingLast=existing_last, existingEmail=existing_email, existingRole=existing_role)
 
+@app.route('/manageEvents', methods=['GET'])
+def manage_events():
+    cursor = connection.cursor()
+
+    name = request.args.get('name')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    location = request.args.get('location')
+
+    if name is not None and start_date is not None and end_date is not None and location is not None:
+        cursor.execute("INSERT into Event (name, start_date, end_date, location) values (%s, %s, %s, %s)", (name, start_date, end_date, location))
+        connection.commit()
+    elif request.args.get('delete') == 'true':
+        delete_id = request.args.get('id')
+        cursor.execute("DELETE from Event where event_id=%s", (delete_id,))
+        connection.commit()
+
+    cursor.execute("Select * from Event")
+    result = cursor.fetchall()
+    cursor.close()
+    return render_template('event-list.html', collection=result)
+
+@app.route("/updateEvent")
+def update_event():
+    id = request.args.get('id')
+    name = request.args.get('name')
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    location = request.args.get('location')
+
+    if id is None:
+        return "An event ID is required."
+    elif name is not None and start_date is not None and end_date is not None and location is not None:
+        cursor = connection.cursor()
+        cursor.execute("UPDATE Event set name=%s, start_date=%s, end_date=%s, location=%s where event_id=%s", (name, start_date, end_date, location, id))
+        cursor.close()
+        connection.commit()
+        return redirect(url_for('manage_events'))
+
+    cursor = connection.cursor()
+    cursor.execute("select name, start_date, end_date, location from Event where event_id=%s;", (id,))
+    existing_name, existing_start_date, existing_end_date, existing_location = cursor.fetchone()
+    cursor.close()
+    return render_template('event-update.html', id=id, existingName=existing_name, existingStartDate=existing_start_date, existingEndDate=existing_end_date, existingLocation=existing_location)
+
 
 
 if __name__ == '__main__':
