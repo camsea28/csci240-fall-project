@@ -10,6 +10,9 @@
    <h1>
       {% block header %}{% endblock %}
    </h1>
+   {% if error %}
+   <p style="color: red;"><strong>Error:</strong> {{ error }}</p>
+   {% endif %}
    {% block content %}{% endblock %}
 </body>
 
